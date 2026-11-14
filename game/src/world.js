@@ -1,8 +1,9 @@
-// The map: "Foundry Yard", an original industrial yard. Two bomb sites, three lanes,
-// cover to crouch behind and sightlines worth holding. Every box is a collider for
-// movement and a surface a bullet stops on. Plain geometry only, no models, no textures.
-import * as THREE from 'three';
-import { PALETTE } from './palette.js';
+// The map: "Foundry Yard", an original industrial yard. Two charge sites, three
+// lanes, cover to crouch behind and sightlines worth holding. Every box is a
+// collider for movement and a surface a bullet stops on. Plain geometry only:
+// no models, no textures.
+import * as THREE from "three";
+import { PALETTE } from "./palette.js";
 
 // Waypoint routes (x, z). Attackers walk them from the south spawn to a site;
 // defenders walk the reverse legs to a hold position.
@@ -25,8 +26,8 @@ export const SPAWNS = {
   warden: [[-6, -17], [-2, -17], [2, -17], [6, -17], [0, -15]],
 };
 
-// Axis-separated box slide used by the player and the bots alike: move one axis at a
-// time and stop at the first collider, so a wall never swallows a body.
+// Axis-separated box slide used by the player and the bots alike: move one axis
+// at a time and stop at the first collider, so a wall never swallows a body.
 export function slideMove(colliders, pos, vel, dt, radius, height) {
   const probe = new THREE.Box3();
   function overlaps(x, y, z, lift) {
@@ -51,11 +52,11 @@ export function createWorld(scene) {
   const group = new THREE.Group();
   scene.add(group);
 
-  const materials = {};
+  const mats = {};
   for (const name of Object.keys(PALETTE)) {
-    materials[name] = new THREE.MeshStandardMaterial({
+    mats[name] = new THREE.MeshStandardMaterial({
       color: new THREE.Color(PALETTE[name]),
-      roughness: name === 'accent' || name === 'ink' ? 0.55 : 0.92,
+      roughness: name === "accent" || name === "ink" ? 0.55 : 0.92,
       metalness: 0.03,
     });
   }
@@ -63,8 +64,8 @@ export function createWorld(scene) {
   const colliders = [];
   const shootables = [];
 
-  function box(width, height, depth, x, y, z, material) {
-    const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), materials[material]);
+  function block(width, height, depth, x, y, z, material) {
+    const mesh = new THREE.Mesh(new THREE.BoxGeometry(width, height, depth), mats[material]);
     mesh.position.set(x, y, z);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -75,41 +76,41 @@ export function createWorld(scene) {
   }
 
   // Ground: 56 x 40 m, walls 5 m high, open sky so one directional light reaches all.
-  box(56.4, 0.4, 40.4, 0, -0.2, 0, 'canvas');
-  box(0.4, 5, 40.4, -28.2, 2.5, 0, 'surface');
-  box(0.4, 5, 40.4, 28.2, 2.5, 0, 'surface');
-  box(56.4, 5, 0.4, 0, 2.5, -20.2, 'surface');
-  box(56.4, 5, 0.4, 0, 2.5, 20.2, 'surface');
+  block(56.4, 0.4, 40.4, 0, -0.2, 0, "canvas");
+  block(0.4, 5, 40.4, -28.2, 2.5, 0, "surface");
+  block(0.4, 5, 40.4, 28.2, 2.5, 0, "surface");
+  block(56.4, 5, 0.4, 0, 2.5, -20.2, "surface");
+  block(56.4, 5, 0.4, 0, 2.5, 20.2, "surface");
 
   // Site A, "Furnace" (north-west): a furnace block, a chimney stack and pipe crates.
-  box(6, 3.4, 1.2, -24, 1.7, -16, 'surface');
-  box(1.4, 6.5, 1.4, -25.5, 3.25, -13, 'hairline');
-  box(3.2, 1.1, 1.2, -17, 0.55, -16.5, 'hairline');
-  box(1.2, 1.1, 3.2, -15, 0.55, -11, 'hairline');
+  block(6, 3.4, 1.2, -24, 1.7, -16, "surface");
+  block(1.4, 6.5, 1.4, -25.5, 3.25, -13, "hairline");
+  block(3.2, 1.1, 1.2, -17, 0.55, -16.5, "hairline");
+  block(1.2, 1.1, 3.2, -15, 0.55, -11, "hairline");
   // Site B, "Depot" (north-east): stacked containers and a low wall.
-  box(5, 2.6, 2.4, 24.5, 1.3, -15, 'surface');
-  box(5, 2.6, 2.4, 24.5, 3.9, -15, 'hairline');
-  box(2.4, 1.1, 1.2, 17, 0.55, -16.5, 'hairline');
-  box(1.2, 1.1, 2.4, 15, 0.55, -11, 'hairline');
+  block(5, 2.6, 2.4, 24.5, 1.3, -15, "surface");
+  block(5, 2.6, 2.4, 24.5, 3.9, -15, "hairline");
+  block(2.4, 1.1, 1.2, 17, 0.55, -16.5, "hairline");
+  block(1.2, 1.1, 2.4, 15, 0.55, -11, "hairline");
   // Mid: a pillar pair and a low wall split the lane, with gaps to shoot through.
-  box(1.4, 3.6, 1.4, -3, 1.8, 0, 'hairline');
-  box(1.4, 3.6, 1.4, 3, 1.8, 0, 'hairline');
-  box(4, 1.1, 1.2, 0, 0.55, -8, 'hairline');
-  box(4, 1.1, 1.2, 0, 0.55, 8, 'hairline');
+  block(1.4, 3.6, 1.4, -3, 1.8, 0, "hairline");
+  block(1.4, 3.6, 1.4, 3, 1.8, 0, "hairline");
+  block(4, 1.1, 1.2, 0, 0.55, -8, "hairline");
+  block(4, 1.1, 1.2, 0, 0.55, 8, "hairline");
   // A-long and B-long cover: crates to crouch behind on the way to each site.
-  box(1.6, 1.1, 1.6, -24, 0.55, 6, 'hairline');
-  box(1.6, 1.1, 1.6, -24, 0.55, -2, 'hairline');
-  box(1.6, 1.1, 1.6, 24, 0.55, 6, 'hairline');
-  box(1.6, 1.1, 1.6, 24, 0.55, -2, 'hairline');
-  box(2.4, 0.9, 1.2, -12, 0.45, 12, 'hairline');
-  box(2.4, 0.9, 1.2, 12, 0.45, 12, 'hairline');
-  box(2.4, 0.9, 1.2, -12, 0.45, -6, 'hairline');
-  box(2.4, 0.9, 1.2, 12, 0.45, -6, 'hairline');
+  block(1.6, 1.1, 1.6, -24, 0.55, 6, "hairline");
+  block(1.6, 1.1, 1.6, -24, 0.55, -2, "hairline");
+  block(1.6, 1.1, 1.6, 24, 0.55, 6, "hairline");
+  block(1.6, 1.1, 1.6, 24, 0.55, -2, "hairline");
+  block(2.4, 0.9, 1.2, -12, 0.45, 12, "hairline");
+  block(2.4, 0.9, 1.2, 12, 0.45, 12, "hairline");
+  block(2.4, 0.9, 1.2, -12, 0.45, -6, "hairline");
+  block(2.4, 0.9, 1.2, 12, 0.45, -6, "hairline");
   // Spawn cover, south and north.
-  box(2.4, 0.9, 1.2, -8, 0.45, 14, 'hairline');
-  box(2.4, 0.9, 1.2, 8, 0.45, 14, 'hairline');
-  box(2.4, 0.9, 1.2, -8, 0.45, -14, 'hairline');
-  box(2.4, 0.9, 1.2, 8, 0.45, -14, 'hairline');
+  block(2.4, 0.9, 1.2, -8, 0.45, 14, "hairline");
+  block(2.4, 0.9, 1.2, 8, 0.45, 14, "hairline");
+  block(2.4, 0.9, 1.2, -8, 0.45, -14, "hairline");
+  block(2.4, 0.9, 1.2, 8, 0.45, -14, "hairline");
 
   // Site pads: flat markers the objective reads (not colliders).
   const siteA = new THREE.Box3(new THREE.Vector3(-24, 0, -16), new THREE.Vector3(-16, 3, -8));

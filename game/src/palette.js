@@ -3,16 +3,16 @@
 // needs, so no other colour appears in the code. The same names are the CSS custom
 // properties in index.html.
 export const PALETTE = {
-  canvas: '#33363d',
-  surface: '#54595f',
-  hairline: '#7d838d',
-  ink: '#e9e6df',
-  muted: '#98a0a8',
-  accent: '#f0a830',
-  ember: '#e0603a',
-  warden: '#3fa8c8',
+  canvas: "#33363d",
+  surface: "#54595f",
+  hairline: "#7d838d",
+  ink: "#e9e6df",
+  muted: "#98a0a8",
+  accent: "#f0a830",
+  ember: "#e0603a",
+  warden: "#3fa8c8",
 };
 
-export function shade(name) {
+export function tone(name) {
   return PALETTE[name];
 }
